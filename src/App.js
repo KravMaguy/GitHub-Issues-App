@@ -8,7 +8,7 @@ const facebook = "facebook/react/issues";
 const graphQl = "graphql/graphql-js/issues";
 
 function App() {
-  const [gitIssues, setIssues] = useState({});
+  const [gitIssues, setGitIssues] = useState([]);
   useEffect(() => {
     const Issues = [
       axios.get(`${BaseUrl}${graphQl}`),
@@ -16,29 +16,27 @@ function App() {
       axios.get(`${BaseUrl}${facebook}`),
     ];
     Promise.all([...Issues])
-      .then((res) => {
-        const issues = res[0].data
-          .concat(res[1].data, res[2].data)
+      .then(([graphIssues, microsoftIssues, facebookIssues]) => {
+        const issues = graphIssues.data
+          .concat(microsoftIssues.data, facebookIssues.data)
           .sort((a, b) => {
             const titleA = a.title;
             const titleB = b.title;
             return titleA < titleB ? -1 : titleA > titleB ? 1 : 0;
           });
-        setIssues({ issues });
+        setGitIssues(issues);
       })
       .catch((error) => {
         console.log("err", error);
       });
   }, []);
 
-  const { issues } = gitIssues;
-
   const removeIssue = (id) => {
-    const filteredRepo = issues.filter((item) => item.id !== id);
-    setIssues({ issues: filteredRepo });
+    const filteredIssues = gitIssues.filter((item) => item.id !== id);
+    setGitIssues(filteredIssues);
   };
 
-  return <IssuesComponent removeIssue={removeIssue} issues={issues} />;
+  return <IssuesComponent removeIssue={removeIssue} issues={gitIssues} />;
 }
 export type issues = any;
 export default App;
