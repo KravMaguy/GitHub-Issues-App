@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import IssuesComponent from "./IssuesComponent";
+import IssuesComponent from "./IssuesComponent.tsx";
 
 const BaseUrl = "https://api.github.com/repos/";
 const microsoft = "microsoft/TypeScript/issues";
@@ -40,5 +40,5 @@ function App() {
 
   return <IssuesComponent removeIssue={removeIssue} issues={issues} />;
 }
-
+export type issues = any;
 export default App;
