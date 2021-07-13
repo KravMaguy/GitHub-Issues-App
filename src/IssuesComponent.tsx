@@ -1,10 +1,11 @@
 import { Card, Badge, Button } from "react-bootstrap";
+import {IProps} from './Types'
 
-const IssuesComponent = ({ issues, removeIssue }) => {
+const IssuesComponent= ({ issues, removeIssue}:IProps) => {
   return (
     <>
       <div>
-        {issues && issues.length > 0
+        {issues?.length > 0
           ? issues.map((x) => {
               const lastItem = x.repository_url.substring(
                 x.repository_url.lastIndexOf("/") + 1
