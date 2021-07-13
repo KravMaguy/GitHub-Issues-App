@@ -33,7 +33,7 @@ function App() {
       });
   }, []);
 
-  const removeIssue = (id:string) => {
+  const removeIssue = (id:Issue["id"]) => {
     const filteredIssues = gitIssues.filter((item) => item.id !== id);
     setGitIssues(filteredIssues);
   };
