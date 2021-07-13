@@ -1,28 +1,15 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "axios"
 import IssuesComponent from "./IssuesComponent";
-
+import {IState} from "./Types"
 const BaseUrl = "https://api.github.com/repos/";
 const microsoft = "microsoft/TypeScript/issues";
 const facebook = "facebook/react/issues";
 const graphQl = "graphql/graphql-js/issues";
 
-export interface IState {
-  issue: {
-    title : string,
-    id : string,
-    repository_url : string,
-    html_url : string,
-    user:{
-      html_url : string,
-      login : string
-      avatar_url : string
-    }
-}[]
-}
 
 function App() {
-  const [gitIssues, setGitIssues] = useState<IState["issue"]>([]);
+  const [gitIssues, setGitIssues] = useState<IState["issues"]>([]);
 
   useEffect(() => {
     const Issues = [

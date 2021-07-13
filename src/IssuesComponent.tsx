@@ -1,19 +1,5 @@
 import { Card, Badge, Button } from "react-bootstrap";
-
-export interface IProps {
-  issues: {
-    title : string,
-    id : string,
-    repository_url : string,
-    html_url : string,
-    user:{
-      html_url : string,
-      login : string
-      avatar_url : string
-    }
-}[]
-removeIssue: (id: string) => void;
-}
+import {IProps} from './Types'
 
 const IssuesComponent= ({ issues, removeIssue}:IProps) => {
   return (
