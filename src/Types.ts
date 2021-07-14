@@ -14,5 +14,5 @@
     };
   }
 
-  export type IProps = IState & { removeIssue: (id: string) => void;
+  export type IProps = IState & { searchValue: string; removeIssue: (id: string) => void;
   };
