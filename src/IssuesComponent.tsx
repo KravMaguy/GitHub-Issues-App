@@ -1,13 +1,14 @@
 import { Card, Badge, Button } from "react-bootstrap";
 import {IProps} from './Types'
+import Loading from "./Loading";
 
-const IssuesComponent= ({ issues, removeIssue, searchValue}:IProps) => {
+const IssuesComponent= ({ loaded, issues, removeIssue, searchValue}:IProps) => {
   const filteredIssues = issues.filter((item)=> item.title.toLowerCase().includes(searchValue.toLowerCase()));
   
   return (
     <>
-      <div>
-        {filteredIssues?.length > 0
+      <div style={{ margin: "10px" }}>
+        {loaded
           ? filteredIssues.map((x) => {
               const lastItem = x.repository_url.substring(
                 x.repository_url.lastIndexOf("/") + 1
@@ -15,7 +16,7 @@ const IssuesComponent= ({ issues, removeIssue, searchValue}:IProps) => {
               const urlArray = x.html_url.split("/");
               const repoUrl = urlArray.slice(0, urlArray.length - 2).join("/");
               return (
-                <Card key={x.id} className="mb-3" style={{ margin: "10px" }}>
+                <Card key={x.id} className="mb-3" >
                   <Card.Body>
                     <div className="d-flex justify-content-between">
                       <div>
@@ -53,7 +54,7 @@ const IssuesComponent= ({ issues, removeIssue, searchValue}:IProps) => {
                 </Card>
               );
             })
-          : `loading`}
+          : <Loading/>}
       </div>
     </>
   );

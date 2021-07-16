@@ -15,6 +15,7 @@ function App() {
   const [gitIssues, setGitIssues] = useState<IState["issues"]>([]);
   const [searchValue, setSearchValue] =useState<string>('')
   const [page, setPage]:[number, (a:number)=>void] = useState(1)
+  const [loaded, setIsLoaded] = useState<boolean>(false)
 
   useEffect(() => {
     const Issues = [
@@ -32,10 +33,13 @@ function App() {
             return titleA < titleB ? -1 : titleA > titleB ? 1 : 0;
           });
         setGitIssues(issues);
+        setIsLoaded(true)
       })
       .catch((error) => {
         console.log("err", error);
       });
+      setIsLoaded(false)
+
   }, [page]);
 
   const removeIssue = (id:Issue["id"]) => {
@@ -61,7 +65,7 @@ function App() {
     <PaginationComponent page={page} calcPage={calcPage} setPage={setPage}/>
   </CardComponent>
 
-  <IssuesComponent searchValue={searchValue} removeIssue={removeIssue} issues={gitIssues}/>
+  <IssuesComponent loaded={loaded} searchValue={searchValue} removeIssue={removeIssue} issues={gitIssues}/>
   </>);
 }
 
