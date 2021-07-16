@@ -1,8 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios"
 import IssuesComponent from "./IssuesComponent";
 import { IState, Issue } from './Types';
-import {Form, Card, Pagination} from "react-bootstrap"
+import CardComponent from "./CardComponent";
+import FilterForm from "./FilterForm";
+import PaginationComponent from "./PaginationComponent";
 
 const BaseUrl = "https://api.github.com/repos/";
 const microsoft = "microsoft/TypeScript/issues";
@@ -10,14 +12,9 @@ const facebook = "facebook/react/issues";
 const graphQl = "graphql/graphql-js/issues";
 
 function App() {
-  const refContainer = useRef<HTMLInputElement | null>(null);
   const [gitIssues, setGitIssues] = useState<IState["issues"]>([]);
-  const [searchValue, setSearchValue] =useState('')
-  const [page, setPage] = useState<number>(1)
-  const isNextPage=true;
-  useEffect(() => {
-    refContainer?.current?.focus();
-  });
+  const [searchValue, setSearchValue] =useState<string>('')
+  const [page, setPage]:[number, (a:number)=>void] = useState(1)
 
   useEffect(() => {
     const Issues = [
@@ -53,28 +50,16 @@ function App() {
 
   function calcPage(amount:number) {
     console.log('pageAdjuster called')
-    setPage(prevPage => prevPage + amount)
+    setPage(page + amount)
   }
 
 
   return (
   <>
-  <Card className="mb-3" style={{"margin":"10px"}}>
-  <Form className="mb-3" style={{"margin":"10px", "width": "75%",}}>
-  <Form.Label>Search Issues</Form.Label>
-  <Form.Control onChange={onParamChange} value={searchValue} ref={refContainer}
-  name="issuesearch" type="text" />  
-  </Form>
-    <Pagination style={{"margin":"10px"}}>
-      {page !== 1 && <Pagination.Prev onClick={() => calcPage(-1)} />}
-      {page !== 1 && <Pagination.Item onClick={() => setPage(1)}>1</Pagination.Item>}
-      {page > 2 && <Pagination.Ellipsis />}
-      {page > 2 && <Pagination.Item onClick={() => calcPage(-1)}>{page - 1}</Pagination.Item>}
-      <Pagination.Item active>{page}</Pagination.Item>
-      {isNextPage && <Pagination.Item onClick={() => calcPage(1)}>{page + 1}</Pagination.Item>}
-      {isNextPage && <Pagination.Next onClick={() => calcPage(1)} />}
-    </Pagination>
-  </Card>
+  <CardComponent>
+    <FilterForm onParamChange={onParamChange} searchValue={searchValue}/>
+    <PaginationComponent page={page} calcPage={calcPage} setPage={setPage}/>
+  </CardComponent>
 
   <IssuesComponent searchValue={searchValue} removeIssue={removeIssue} issues={gitIssues}/>
   </>);
