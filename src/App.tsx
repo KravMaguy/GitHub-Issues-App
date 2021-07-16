@@ -16,6 +16,7 @@ function App() {
   const [searchValue, setSearchValue] =useState<string>('')
   const [page, setPage]:[number, (a:number)=>void] = useState(1)
   const [loaded, setIsLoaded] = useState<boolean>(false)
+  const [error, setError] =useState('')
 
   useEffect(() => {
     const Issues = [
@@ -36,7 +37,8 @@ function App() {
         setIsLoaded(true)
       })
       .catch((error) => {
-        console.log("err", error);
+        // console.log("err", error.message);
+        setError(error.message)
       });
       setIsLoaded(false)
 
@@ -65,7 +67,7 @@ function App() {
     <PaginationComponent page={page} calcPage={calcPage} setPage={setPage}/>
   </CardComponent>
 
-  <IssuesComponent loaded={loaded} searchValue={searchValue} removeIssue={removeIssue} issues={gitIssues}/>
+  <IssuesComponent error={error} loaded={loaded} searchValue={searchValue} removeIssue={removeIssue} issues={gitIssues}/>
   </>);
 }
 

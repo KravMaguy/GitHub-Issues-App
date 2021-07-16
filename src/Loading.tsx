@@ -5,7 +5,6 @@ const Loading = () => {
 
     useEffect(() => {
     let loadingInterval = setTimeout(() => setCount(prevCount=>prevCount+1), 200);
-    console.log(count, 'count')
     return () => { clearTimeout(loadingInterval);};
     },[count]);
 
