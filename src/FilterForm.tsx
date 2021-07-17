@@ -7,7 +7,7 @@ interface FilterFormProps {
   error: string;
 }
 
-const FilterForm: React.SFC<FilterFormProps> = ({
+const FilterForm: React.FunctionComponent<FilterFormProps> = ({
   onParamChange,
   searchValue,
   error,

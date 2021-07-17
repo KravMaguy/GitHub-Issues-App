@@ -5,6 +5,7 @@ import { IState, Issue } from "./Types";
 import CardComponent from "./CardComponent";
 import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
+import { Form } from "react-bootstrap";
 
 const BaseUrl = "https://api.github.com/repos/";
 const microsoft = "microsoft/TypeScript/issues";
@@ -17,6 +18,14 @@ function App() {
   const [page, setPage]: [number, (a: number) => void] = useState(1);
   const [loaded, setIsLoaded] = useState<boolean>(false);
   const [error, setError] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const Issues = [
@@ -59,7 +68,31 @@ function App() {
 
   return (
     <>
-      <CardComponent>
+      <div
+        className={`${
+          isModalOpen ? "my-modal-overlay show-my-modal" : "my-modal-overlay"
+        }`}
+      >
+        <div className="modal-container">
+          <button className="close-modal-btn" onClick={closeModal}>
+            X{" "}
+          </button>
+          <Form className="mb-3" style={{ margin: "10px", width: "75%" }}>
+            <Form.Label>Issue Title</Form.Label>
+            <Form.Control name="issue_title" type="text" />
+            <Form.Label>Author</Form.Label>
+            <Form.Control name="issue_author" type="text" />
+            <Form.Select aria-label="Default select example">
+              <option>Open this select menu</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </Form.Select>
+          </Form>
+        </div>
+      </div>
+
+      <CardComponent openModal={openModal}>
         <FilterForm
           error={error}
           onParamChange={onParamChange}
