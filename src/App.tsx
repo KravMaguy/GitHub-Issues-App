@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import axios from "axios"
+import axios from "axios";
 import IssuesComponent from "./IssuesComponent";
-import { IState, Issue } from './Types';
+import { IState, Issue } from "./Types";
 import CardComponent from "./CardComponent";
 import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
@@ -13,10 +13,10 @@ const graphQl = "graphql/graphql-js/issues";
 
 function App() {
   const [gitIssues, setGitIssues] = useState<IState["issues"]>([]);
-  const [searchValue, setSearchValue] =useState<string>('')
-  const [page, setPage]:[number, (a:number)=>void] = useState(1)
-  const [loaded, setIsLoaded] = useState<boolean>(false)
-  const [error, setError] =useState('')
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [page, setPage]: [number, (a: number) => void] = useState(1);
+  const [loaded, setIsLoaded] = useState<boolean>(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const Issues = [
@@ -28,47 +28,60 @@ function App() {
       .then(([graphIssues, microsoftIssues, facebookIssues]) => {
         const issues = graphIssues.data
           .concat(microsoftIssues.data, facebookIssues.data)
-          .sort((a:Issue, b:Issue) => {
+          .sort((a: Issue, b: Issue) => {
             const titleA = a.title;
             const titleB = b.title;
             return titleA < titleB ? -1 : titleA > titleB ? 1 : 0;
           });
         setGitIssues(issues);
-        setIsLoaded(true)
+        setIsLoaded(true);
       })
       .catch((error) => {
-        // console.log("err", error.message);
-        setError(error.message)
+        setError(error.message);
       });
-      setIsLoaded(false)
-
+    setIsLoaded(false);
   }, [page]);
 
-  const removeIssue = (id:Issue["id"]) => {
+  const removeIssue = (id: Issue["id"]) => {
     const filteredIssues = gitIssues.filter((item) => item.id !== id);
     setGitIssues(filteredIssues);
   };
 
-  const onParamChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
-    const value=e.target.value
-    setSearchValue(value)
-  }
+  const onParamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+  };
 
-  function calcPage(amount:number) {
-    console.log('pageAdjuster called')
-    setPage(page + amount)
+  function calcPage(amount: number) {
+    console.log("pageAdjuster called");
+    setPage(page + amount);
   }
-
 
   return (
-  <>
-  <CardComponent>
-    <FilterForm onParamChange={onParamChange} searchValue={searchValue}/>
-    <PaginationComponent page={page} calcPage={calcPage} setPage={setPage}/>
-  </CardComponent>
+    <>
+      <CardComponent>
+        <FilterForm
+          error={error}
+          onParamChange={onParamChange}
+          searchValue={searchValue}
+        />
+        <PaginationComponent
+          error={error}
+          page={page}
+          calcPage={calcPage}
+          setPage={setPage}
+        />
+      </CardComponent>
 
-  <IssuesComponent error={error} loaded={loaded} searchValue={searchValue} removeIssue={removeIssue} issues={gitIssues}/>
-  </>);
+      <IssuesComponent
+        error={error}
+        loaded={loaded}
+        searchValue={searchValue}
+        removeIssue={removeIssue}
+        issues={gitIssues}
+      />
+    </>
+  );
 }
 
 export default App;

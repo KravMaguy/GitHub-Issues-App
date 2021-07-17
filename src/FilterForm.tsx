@@ -1,13 +1,17 @@
 import { useEffect, useRef } from "react";
 import { Form } from "react-bootstrap";
 
-interface FilterFormProps{
+interface FilterFormProps {
   onParamChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  searchValue: string;  
+  searchValue: string;
+  error: string;
 }
 
-
-const FilterForm: React.SFC<FilterFormProps> = ({onParamChange, searchValue}: FilterFormProps) => {
+const FilterForm: React.SFC<FilterFormProps> = ({
+  onParamChange,
+  searchValue,
+  error,
+}: FilterFormProps) => {
   const refContainer = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     refContainer?.current?.focus();
@@ -17,6 +21,7 @@ const FilterForm: React.SFC<FilterFormProps> = ({onParamChange, searchValue}: Fi
     <Form className="mb-3" style={{ margin: "10px", width: "75%" }}>
       <Form.Label>Search Issues</Form.Label>
       <Form.Control
+        disabled={error ? true : false}
         onChange={onParamChange}
         value={searchValue}
         ref={refContainer}
