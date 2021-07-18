@@ -5,12 +5,17 @@ import { IState, Issue } from "./Types";
 import CardComponent from "./CardComponent";
 import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
-// import { Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 const BaseUrl = "https://api.github.com/repos/";
 const microsoft = "microsoft/TypeScript/issues";
 const facebook = "facebook/react/issues";
 const graphQl = "graphql/graphql-js/issues";
+
+interface GitUser {
+  id: number;
+  login: string;
+}
 
 function App() {
   const [gitIssues, setGitIssues] = useState<IState["issues"]>([]);
@@ -20,9 +25,9 @@ function App() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [input, setInput] = useState("");
-  const [gitUsers, setGitUsers] = useState([]);
+  const [gitUsers, setGitUsers] = useState<Array<GitUser>>([]);
 
-  const handleSubmit = (event: React.FormEventHandler<HTMLFormElement>) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
     console.log("submitted");
     axios
@@ -41,8 +46,6 @@ function App() {
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
     setInput(event.target.value);
-    // console.log("handleChange ", input);
-    // console.log(event);
   };
 
   const openModal = () => {
@@ -102,7 +105,11 @@ function App() {
           <button className="close-modal-btn" onClick={closeModal}>
             X{" "}
           </button>
-          {/* <Form className="mb-3" style={{ margin: "10px", width: "75%" }}> */}
+          {/* <Form
+            className="mb-3"
+            onSubmit={handleSubmit}
+            style={{ margin: "10px", width: "75%" }}
+          > */}
           <form className="form" onSubmit={handleSubmit}>
             {gitUsers.length < 1 ? (
               <input
@@ -127,13 +134,13 @@ function App() {
               </select>
             )}
             <input type="submit" value="search" />
-          </form>
-          {/* 
+            {/* </Form> */}
+            {/* 
             <Form.Label>Issue Title</Form.Label>
             <Form.Control name="issue_title" type="text" />
             <Form.Label>Author</Form.Label>
-            <Form.Control name="issue_author" type="text" /> 
-          </Form>*/}
+            <Form.Control name="issue_author" type="text" /> */}
+          </form>
         </div>
       </div>
 
