@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es5",
     "module": "esnext",
-    "strict": true,
+    "noImplicitAny": false,
+    // "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

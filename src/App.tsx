@@ -5,7 +5,7 @@ import { IState, Issue } from "./Types";
 import CardComponent from "./CardComponent";
 import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
-import { Form } from "react-bootstrap";
+// import { Form } from "react-bootstrap";
 
 const BaseUrl = "https://api.github.com/repos/";
 const microsoft = "microsoft/TypeScript/issues";
@@ -19,6 +19,31 @@ function App() {
   const [loaded, setIsLoaded] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [input, setInput] = useState("");
+  const [gitUsers, setGitUsers] = useState([]);
+
+  const handleSubmit = (event: React.FormEventHandler<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log("submitted");
+    axios
+      .get(`https://api.github.com/search/users?q=${input}`)
+      .then(({ data }) => {
+        const { items } = data;
+        setInput("");
+        setGitUsers(items);
+      })
+      .catch((e) => console.log("err", e));
+  };
+
+  const handleChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setInput(event.target.value);
+    // console.log("handleChange ", input);
+    // console.log(event);
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -77,18 +102,38 @@ function App() {
           <button className="close-modal-btn" onClick={closeModal}>
             X{" "}
           </button>
-          <Form className="mb-3" style={{ margin: "10px", width: "75%" }}>
+          {/* <Form className="mb-3" style={{ margin: "10px", width: "75%" }}> */}
+          <form className="form" onSubmit={handleSubmit}>
+            {gitUsers.length < 1 ? (
+              <input
+                list="opts"
+                name="user"
+                value={input}
+                onChange={handleChange}
+                id="search-user"
+              />
+            ) : (
+              <select
+                onChange={handleChange}
+                name="user-select"
+                id="user-select"
+                className="country-select"
+              >
+                {gitUsers.map((option) => (
+                  <option key={option.id} value={option.login}>
+                    {option.login}
+                  </option>
+                ))}
+              </select>
+            )}
+            <input type="submit" value="search" />
+          </form>
+          {/* 
             <Form.Label>Issue Title</Form.Label>
             <Form.Control name="issue_title" type="text" />
             <Form.Label>Author</Form.Label>
-            <Form.Control name="issue_author" type="text" />
-            <Form.Select aria-label="Default select example">
-              <option>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </Form.Select>
-          </Form>
+            <Form.Control name="issue_author" type="text" /> 
+          </Form>*/}
         </div>
       </div>
 
