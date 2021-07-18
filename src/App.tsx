@@ -50,11 +50,14 @@ function App() {
   const openModal = () => {
     setIsModalOpen(true);
   };
-  const closeModal = (event: React.MouseEventHandler<HTMLDivElement>) => {
+  const closeModal = (event: any) => {
     //Property 'stopPropagation' does not exist on type 'MouseEventHandler<HTMLDivElement>'.ts(2339)
-    event.stopPropagation();
-
-    setIsModalOpen(false);
+    // event.stopPropagation();
+    console.log(event.target.id, ": target");
+    const targetId = event.target.id;
+    if (targetId === "modal-overlay") {
+      setIsModalOpen(false);
+    }
     console.log("close modal called");
   };
 
@@ -100,6 +103,7 @@ function App() {
   return (
     <>
       <div
+        id="modal-overlay"
         onClick={closeModal}
         className={`${
           isModalOpen ? "my-modal-overlay show-my-modal" : "my-modal-overlay"
