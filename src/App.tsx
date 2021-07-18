@@ -5,8 +5,7 @@ import { IState, Issue } from "./Types";
 import CardComponent from "./CardComponent";
 import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
-import { Form } from "react-bootstrap";
-
+import { Form, InputGroup, Button, FormControl } from "react-bootstrap";
 const BaseUrl = "https://api.github.com/repos/";
 const microsoft = "microsoft/TypeScript/issues";
 const facebook = "facebook/react/issues";
@@ -27,7 +26,7 @@ function App() {
   const [input, setInput] = useState("");
   const [gitUsers, setGitUsers] = useState<Array<GitUser>>([]);
 
-  const handleSubmit = (event: any) => {
+  const handleGitSearch = (event: any) => {
     event.preventDefault();
     console.log("submitted");
     axios
@@ -51,8 +50,12 @@ function App() {
   const openModal = () => {
     setIsModalOpen(true);
   };
-  const closeModal = () => {
+  const closeModal = (event: React.MouseEventHandler<HTMLDivElement>) => {
+    //Property 'stopPropagation' does not exist on type 'MouseEventHandler<HTMLDivElement>'.ts(2339)
+    event.stopPropagation();
+
     setIsModalOpen(false);
+    console.log("close modal called");
   };
 
   useEffect(() => {
@@ -97,28 +100,35 @@ function App() {
   return (
     <>
       <div
+        onClick={closeModal}
         className={`${
           isModalOpen ? "my-modal-overlay show-my-modal" : "my-modal-overlay"
         }`}
       >
         <div className="modal-container">
-          <button className="close-modal-btn" onClick={closeModal}>
-            X{" "}
-          </button>
           {/* <Form
             className="mb-3"
             onSubmit={handleSubmit}
             style={{ margin: "10px", width: "75%" }}
           > */}
-          <form className="form" onSubmit={handleSubmit}>
+          <InputGroup className="mb-3">
             {gitUsers.length < 1 ? (
-              <input
-                list="opts"
-                name="user"
-                value={input}
-                onChange={handleChange}
-                id="search-user"
-              />
+              <>
+                <FormControl
+                  placeholder="GitHub username"
+                  aria-label="GitHub username"
+                  aria-describedby="basic-addon2"
+                  onChange={handleChange}
+                />
+                <Button
+                  onClick={handleGitSearch}
+                  variant="primary"
+                  id="button-addon2"
+                  style={{ borderRadius: "0px 4px 4px 0px" }}
+                >
+                  Search
+                </Button>
+              </>
             ) : (
               <select
                 onChange={handleChange}
@@ -133,14 +143,8 @@ function App() {
                 ))}
               </select>
             )}
-            <input type="submit" value="search" />
-            {/* </Form> */}
-            {/* 
-            <Form.Label>Issue Title</Form.Label>
-            <Form.Control name="issue_title" type="text" />
-            <Form.Label>Author</Form.Label>
-            <Form.Control name="issue_author" type="text" /> */}
-          </form>
+          </InputGroup>
+          {/* </Form> */}
         </div>
       </div>
 

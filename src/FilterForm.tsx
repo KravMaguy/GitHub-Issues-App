@@ -15,7 +15,7 @@ const FilterForm: React.FunctionComponent<FilterFormProps> = ({
   const refContainer = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     refContainer?.current?.focus();
-  });
+  }, []);
 
   return (
     <Form className="mb-3" style={{ margin: "10px", width: "75%" }}>
