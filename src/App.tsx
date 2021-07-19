@@ -25,6 +25,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [input, setInput] = useState("");
   const [gitUsers, setGitUsers] = useState<Array<GitUser>>([]);
+  const [selectedUser, setSelectedUser] = useState<GitUser>();
 
   const handleGitSearch = (event: any) => {
     event.preventDefault();
@@ -50,15 +51,14 @@ function App() {
   const openModal = () => {
     setIsModalOpen(true);
   };
+
   const closeModal = (event: any) => {
     //Property 'stopPropagation' does not exist on type 'MouseEventHandler<HTMLDivElement>'.ts(2339)
     // event.stopPropagation();
-    console.log(event.target.id, ": target");
     const targetId = event.target.id;
     if (targetId === "modal-overlay") {
       setIsModalOpen(false);
     }
-    console.log("close modal called");
   };
 
   useEffect(() => {
@@ -100,6 +100,23 @@ function App() {
     setPage(page + amount);
   }
 
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log("form was submitted");
+  };
+
+  const goBack = (e: any) => {
+    setGitUsers([]);
+    console.log("users is now ", gitUsers);
+  };
+
+  const handleSelectedUser = () => {
+    const selectedUser = gitUsers.find((user) => user.login === input);
+    console.log("selectedUser: ", selectedUser);
+
+    setSelectedUser(selectedUser);
+  };
+  console.log("input ", input);
   return (
     <>
       <div
@@ -110,45 +127,60 @@ function App() {
         }`}
       >
         <div className="modal-container">
-          {/* <Form
+          <Form
             className="mb-3"
             onSubmit={handleSubmit}
-            style={{ margin: "10px", width: "75%" }}
-          > */}
-          <InputGroup className="mb-3">
-            {gitUsers.length < 1 ? (
-              <>
-                <FormControl
-                  placeholder="GitHub username"
-                  aria-label="GitHub username"
-                  aria-describedby="basic-addon2"
-                  onChange={handleChange}
-                />
-                <Button
-                  onClick={handleGitSearch}
-                  variant="primary"
-                  id="button-addon2"
-                  style={{ borderRadius: "0px 4px 4px 0px" }}
-                >
-                  Search
-                </Button>
-              </>
-            ) : (
-              <select
-                onChange={handleChange}
-                name="user-select"
-                id="user-select"
-                className="country-select"
-              >
-                {gitUsers.map((option) => (
-                  <option key={option.id} value={option.login}>
-                    {option.login}
-                  </option>
-                ))}
-              </select>
-            )}
-          </InputGroup>
-          {/* </Form> */}
+            // style={{ margin: "10px", width: "75%" }}
+          >
+            <InputGroup className="mb-3 select-input">
+              {gitUsers.length < 1 ? (
+                <>
+                  <FormControl
+                    placeholder="Search gitHub users"
+                    aria-label="GitHub username"
+                    aria-describedby="basic-addon2"
+                    onChange={handleChange}
+                    value={input}
+                  />
+                  <Button
+                    onClick={handleGitSearch}
+                    variant="primary"
+                    id="button-addon2"
+                    style={{ borderRadius: "0px 4px 4px 0px" }}
+                  >
+                    Search
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <select
+                    onChange={handleChange}
+                    name="user-select"
+                    id="user-select"
+                    value={input}
+                  >
+                    {gitUsers.map((option) => (
+                      <option key={option.id} value={option.login}>
+                        {option.login}
+                      </option>
+                    ))}
+                  </select>
+                  <span onClick={goBack} className="close">
+                    x
+                  </span>
+
+                  <Button
+                    onClick={handleSelectedUser}
+                    variant="primary"
+                    id="button-addon2"
+                    style={{ borderRadius: "0px 4px 4px 0px" }}
+                  >
+                    Next
+                  </Button>
+                </>
+              )}
+            </InputGroup>
+          </Form>
         </div>
       </div>
 
