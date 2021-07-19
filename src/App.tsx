@@ -7,6 +7,12 @@ import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
 import { Form, InputGroup, Button, FormControl } from "react-bootstrap";
 
+const repos = [
+  { name: "TypeScript", id: 1 },
+  { name: "graphql-js", id: 2 },
+  { name: "react", id: 3 },
+];
+
 const BaseUrl = "http://localhost:3001/";
 const microsoft = "microsoft";
 const facebook = "facebook";
@@ -28,34 +34,28 @@ function App() {
   const [loaded, setIsLoaded] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState({
+    repoSelect: repos[0].name,
+    userSelect: "",
+    issueTitle: "",
+  });
   const [gitUsers, setGitUsers] = useState<Array<GitUser>>([]);
   const [selectedUser, setSelectedUser] = useState<GitUser>();
+  const [isFinalPage, SetIsFinalPage] = useState<boolean>(false);
 
   const handleGitSearch = (event: any) => {
+    if (!input) {
+      return window.alert("input can not be blank");
+    }
     event.preventDefault();
-    console.log("submitted");
     axios
-      .get(`https://api.github.com/search/users?q=${input}`)
+      .get(`https://api.github.com/search/users?q=${input.userSelect}`)
       .then(({ data }) => {
         const { items } = data;
-        setInput("");
         setGitUsers(items);
         setSelectedUser(items[0]);
       })
       .catch((e) => console.log("err", e));
-  };
-
-  const handleChange = (
-    event:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const value = event.target.value;
-    setInput(value);
-    const selectedUser = gitUsers.find((user) => user.login === value);
-    console.log("selectedUser: ", selectedUser);
-    setSelectedUser(selectedUser);
   };
 
   const openModal = () => {
@@ -106,26 +106,35 @@ function App() {
   };
 
   function calcPage(amount: number) {
-    console.log("pageAdjuster called");
     setPage(page + amount);
   }
 
+  const handleChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const value = event.target.value;
+    const name = event.target.name;
+    setInput({ ...input, [name]: value });
+    if (name === "userSelect") {
+      const selectedUser = gitUsers.find((user) => user.login === value);
+      setSelectedUser(selectedUser);
+    }
+  };
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("form was submitted");
+    console.log("form was submitted ", input, selectedUser);
   };
 
-  const goBack = (e: any) => {
-    setGitUsers([]);
-    console.log("users is now ", gitUsers);
+  const goBack = (step: number) => {
+    return step === 1 ? setGitUsers([]) : SetIsFinalPage(false);
   };
 
-  const handleSelectedUser = () => {
-    // const selectedUser = gitUsers.find((user) => user.login === input);
-    // console.log("selectedUser: ", selectedUser);
-
-    // setSelectedUser(selectedUser);
+  const finalPage = () => {
     console.log("go to next page with the selectedUser");
+    SetIsFinalPage(true);
   };
 
   return (
@@ -140,57 +149,84 @@ function App() {
         <div className="modal-container">
           <Form
             className="mb-3"
-            onSubmit={handleSubmit}
-            // style={{ margin: "10px", width: "75%" }}
+            // onSubmit={handleSubmit}
           >
-            <InputGroup className="mb-3 select-input">
-              {gitUsers.length < 1 ? (
-                <>
-                  <FormControl
-                    placeholder="Search gitHub users"
-                    aria-label="GitHub username"
-                    aria-describedby="basic-addon2"
-                    onChange={handleChange}
-                    value={input}
-                  />
-                  <Button
-                    onClick={handleGitSearch}
-                    variant="primary"
-                    id="button-addon2"
-                    style={{ borderRadius: "0px 4px 4px 0px" }}
-                  >
-                    Search
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <select
-                    onChange={handleChange}
-                    name="user-select"
-                    id="user-select"
-                    value={input}
-                  >
-                    {gitUsers.map((option) => (
-                      <option key={option.id} value={option.login}>
-                        {option.login}
-                      </option>
-                    ))}
-                  </select>
-                  <span onClick={goBack} className="close">
-                    x
-                  </span>
-
-                  <Button
-                    onClick={handleSelectedUser}
-                    variant="primary"
-                    id="button-addon2"
-                    style={{ borderRadius: "0px 4px 4px 0px" }}
-                  >
-                    Next
-                  </Button>
-                </>
-              )}
-            </InputGroup>
+            {gitUsers.length < 1 ? (
+              <InputGroup className="mb-3 select-input">
+                <FormControl
+                  name="userSelect"
+                  placeholder="Search gitHub users"
+                  onChange={handleChange}
+                  value={input.userSelect}
+                />
+                <Button
+                  onClick={handleGitSearch}
+                  style={{ borderRadius: "0px 4px 4px 0px" }}
+                >
+                  Search
+                </Button>
+              </InputGroup>
+            ) : selectedUser && isFinalPage ? (
+              <InputGroup className="mb-3 select-input">
+                <Button
+                  onClick={() => goBack(2)}
+                  style={{ borderRadius: "4px 0px 0px 4px" }}
+                >
+                  back
+                </Button>
+                <Form.Control
+                  onChange={handleChange}
+                  as="select"
+                  name="repoSelect"
+                  value={input.repoSelect}
+                >
+                  {repos.map((repo) => (
+                    <option key={repo.id} value={repo.name}>
+                      {repo.name}
+                    </option>
+                  ))}
+                </Form.Control>
+                <FormControl
+                  placeholder="Issue Title"
+                  name="issueTitle"
+                  value={input.issueTitle}
+                  onChange={handleChange}
+                />
+                <Button
+                  onClick={handleSubmit}
+                  style={{ borderRadius: "0px 4px 4px 0px" }}
+                >
+                  Submit
+                </Button>
+              </InputGroup>
+            ) : (
+              <InputGroup className="mb-3 select-input">
+                <Button
+                  onClick={() => goBack(1)}
+                  style={{ borderRadius: "4px 0px 0px 4px" }}
+                >
+                  back
+                </Button>
+                <Form.Control
+                  as="select"
+                  onChange={handleChange}
+                  name="userSelect"
+                  value={input.userSelect}
+                >
+                  {gitUsers.map((option) => (
+                    <option key={option.id} value={option.login}>
+                      {option.login}
+                    </option>
+                  ))}
+                </Form.Control>
+                <Button
+                  onClick={finalPage}
+                  style={{ borderRadius: "0px 4px 4px 0px" }}
+                >
+                  Next
+                </Button>
+              </InputGroup>
+            )}
           </Form>
         </div>
       </div>

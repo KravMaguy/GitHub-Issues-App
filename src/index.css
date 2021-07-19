@@ -26,35 +26,21 @@
     z-index: 10;
   }
   .modal-container {
-    /* background: var(--clr-white);
-    border-radius: var(--radius); */
     width: 90vw;
-    /* height: 30vh; */
     max-width: var(--fixed-width);
     bottom: 20vh;
     position: relative;
   }
 
-  #user-select{
+  #repo-select{
     flex-grow: 1;
     border: 1px solid rgb(0 123 255 / 50%);
     border-radius: 4px 0px 0px 4px;
   }
-  .select-input{
-    /* display:flex */
+
+  .page-item.active .page-link {
+    z-index: 0;
   }
 
-  .close {
-    float: right;
-    font-size: 1.5rem;
-    font-weight: 500;
-    line-height: 1.3;
-    color: tomato;
-    opacity: .5;
-    right: 87px;
-    position: absolute;
-    cursor: pointer;
-    
-}
 
   

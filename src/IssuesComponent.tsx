@@ -72,14 +72,14 @@ const IssuesComponent = ({
         <div>
           <Alert variant="success">
             <Alert.Heading>Total Results</Alert.Heading>
-            <p>{`${filteredIssues.length} results`}</p>
+            <p>{`${filteredIssues.length} ${pageResults}`}</p>
           </Alert>
           {mapToFiltered()}
         </div>
       ) : (
         <Alert variant="info">
-          <Alert.Heading>Please change your search</Alert.Heading>
-          <p>{`${filteredIssues.length} results`}</p>
+          <Alert.Heading>Change your search terms</Alert.Heading>
+          <p>{`${filteredIssues.length} ${pageResults}`}</p>
         </Alert>
       )}
     </div>

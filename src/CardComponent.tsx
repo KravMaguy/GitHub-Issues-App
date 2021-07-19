@@ -12,7 +12,10 @@ const CardComponent: React.FunctionComponent<CardComponentProps> = ({
     <Card className="mb-3" style={{ margin: "10px" }}>
       {children}
       <Card.Footer>
-        <Button onClick={openModal} variant="secondary">
+        <Button
+          onClick={openModal}
+          style={{ color: "black", backgroundColor: "mintcream" }}
+        >
           Add Issue
         </Button>
       </Card.Footer>
