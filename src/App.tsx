@@ -13,17 +13,17 @@ const repos = [
   { name: "react", id: 3 },
 ];
 
-const BaseUrl = "http://localhost:3001/";
-const microsoft = "microsoft";
-const facebook = "facebook";
-const graphQl = "graphql";
-// const BaseUrl = "https://api.github.com/repos/";
-// const microsoft = "microsoft/TypeScript/issues";
-// const facebook = "facebook/react/issues";
-// const graphQl = "graphql/graphql-js/issues";
+// const BaseUrl = "http://localhost:3001/";
+// const microsoft = "microsoft";
+// const facebook = "facebook";
+// const graphQl = "graphql";
+const BaseUrl = "https://api.github.com/repos/";
+const microsoft = "microsoft/TypeScript/issues";
+const facebook = "facebook/react/issues";
+const graphQl = "graphql/graphql-js/issues";
 
 interface GitUser {
-  id: number;
+  id: string;
   login: string;
   avatar_url: string;
   html_url: string;
@@ -129,22 +129,26 @@ function App() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    setIsModalOpen(false);
+    if (!selectedUser) return;
+    console.log(selectedUser, "selectedUser");
     const { avatar_url, login, html_url } = selectedUser;
-    console.log("userSelect ", userSelect);
-    console.log("issuetitle ", issueTitle);
-    console.log("repoSelect", repoSelect);
-    console.log("avatar_url", avatar_url);
-    console.log("login", login);
-    console.log("html_url", html_url);
+    // console.log("***********************");
+    // console.log("userSelect ", userSelect);
+    // console.log("issuetitle ", issueTitle);
+    // console.log("repoSelect", repoSelect);
+    // console.log("avatar_url", avatar_url);
+    // console.log("login", login);
+    // console.log("html_url", html_url);
     if (!issueTitle) {
       return window.alert("Title can not be blank");
     }
+    setIsModalOpen(false);
+    console.log(Date.now().toString());
     const newIssue = {
       title: issueTitle,
       id: Date.now().toString(),
       repository_url: "https://github.com/microsoft/TypeScript/issues/44943",
-      html_url,
+      html_url: html_url,
       user: {
         html_url,
         login,
