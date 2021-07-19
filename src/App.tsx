@@ -25,6 +25,8 @@ const graphQl = "graphql";
 interface GitUser {
   id: number;
   login: string;
+  avatar_url: string;
+  html_url: string;
 }
 
 function App() {
@@ -43,13 +45,15 @@ function App() {
   const [selectedUser, setSelectedUser] = useState<GitUser>();
   const [isFinalPage, SetIsFinalPage] = useState<boolean>(false);
 
+  const { userSelect, repoSelect, issueTitle } = input;
+
   const handleGitSearch = (event: any) => {
-    if (!input) {
+    event.preventDefault();
+    if (!userSelect) {
       return window.alert("input can not be blank");
     }
-    event.preventDefault();
     axios
-      .get(`https://api.github.com/search/users?q=${input.userSelect}`)
+      .get(`https://api.github.com/search/users?q=${userSelect}`)
       .then(({ data }) => {
         const { items } = data;
         setGitUsers(items);
@@ -125,7 +129,29 @@ function App() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("form was submitted ", input, selectedUser);
+    setIsModalOpen(false);
+    const { avatar_url, login, html_url } = selectedUser;
+    console.log("userSelect ", userSelect);
+    console.log("issuetitle ", issueTitle);
+    console.log("repoSelect", repoSelect);
+    console.log("avatar_url", avatar_url);
+    console.log("login", login);
+    console.log("html_url", html_url);
+    if (!issueTitle) {
+      return window.alert("Title can not be blank");
+    }
+    const newIssue = {
+      title: issueTitle,
+      id: Date.now().toString(),
+      repository_url: "https://github.com/microsoft/TypeScript/issues/44943",
+      html_url,
+      user: {
+        html_url,
+        login,
+        avatar_url,
+      },
+    };
+    setGitIssues([newIssue, ...gitIssues]);
   };
 
   const goBack = (step: number) => {
@@ -157,7 +183,7 @@ function App() {
                   name="userSelect"
                   placeholder="Search gitHub users"
                   onChange={handleChange}
-                  value={input.userSelect}
+                  value={userSelect}
                 />
                 <Button
                   onClick={handleGitSearch}
@@ -178,7 +204,7 @@ function App() {
                   onChange={handleChange}
                   as="select"
                   name="repoSelect"
-                  value={input.repoSelect}
+                  value={repoSelect}
                 >
                   {repos.map((repo) => (
                     <option key={repo.id} value={repo.name}>
@@ -189,7 +215,7 @@ function App() {
                 <FormControl
                   placeholder="Issue Title"
                   name="issueTitle"
-                  value={input.issueTitle}
+                  value={issueTitle}
                   onChange={handleChange}
                 />
                 <Button
@@ -211,7 +237,7 @@ function App() {
                   as="select"
                   onChange={handleChange}
                   name="userSelect"
-                  value={input.userSelect}
+                  value={userSelect}
                 >
                   {gitUsers.map((option) => (
                     <option key={option.id} value={option.login}>
