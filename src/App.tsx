@@ -6,10 +6,15 @@ import CardComponent from "./CardComponent";
 import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
 import { Form, InputGroup, Button, FormControl } from "react-bootstrap";
-const BaseUrl = "https://api.github.com/repos/";
-const microsoft = "microsoft/TypeScript/issues";
-const facebook = "facebook/react/issues";
-const graphQl = "graphql/graphql-js/issues";
+
+const BaseUrl = "http://localhost:3001/";
+const microsoft = "microsoft";
+const facebook = "facebook";
+const graphQl = "graphql";
+// const BaseUrl = "https://api.github.com/repos/";
+// const microsoft = "microsoft/TypeScript/issues";
+// const facebook = "facebook/react/issues";
+// const graphQl = "graphql/graphql-js/issues";
 
 interface GitUser {
   id: number;
@@ -36,6 +41,7 @@ function App() {
         const { items } = data;
         setInput("");
         setGitUsers(items);
+        setSelectedUser(items[0]);
       })
       .catch((e) => console.log("err", e));
   };
@@ -45,7 +51,11 @@ function App() {
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setInput(event.target.value);
+    const value = event.target.value;
+    setInput(value);
+    const selectedUser = gitUsers.find((user) => user.login === value);
+    console.log("selectedUser: ", selectedUser);
+    setSelectedUser(selectedUser);
   };
 
   const openModal = () => {
@@ -111,12 +121,13 @@ function App() {
   };
 
   const handleSelectedUser = () => {
-    const selectedUser = gitUsers.find((user) => user.login === input);
-    console.log("selectedUser: ", selectedUser);
+    // const selectedUser = gitUsers.find((user) => user.login === input);
+    // console.log("selectedUser: ", selectedUser);
 
-    setSelectedUser(selectedUser);
+    // setSelectedUser(selectedUser);
+    console.log("go to next page with the selectedUser");
   };
-  console.log("input ", input);
+
   return (
     <>
       <div
