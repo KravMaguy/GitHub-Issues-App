@@ -166,6 +166,7 @@ function App() {
   return (
     <>
       <FormModal closeModal={closeModal} isModalOpen={isModalOpen}>
+        <div className={`${isModalOpen ? "scale-up zoom" : "hidden"}`}>#1</div>
         <MultiStepForm
           gitUsers={gitUsers}
           handleChange={handleChange}

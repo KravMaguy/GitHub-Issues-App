@@ -1,46 +1,95 @@
 :root {
-    --clr-white: #fff;
-    --clr-black: #222;
-    --transition: all 0.3s linear;
-    --radius: 0.25rem;
-    --max-width: 1170px;
-    --fixed-width: 620px;
-  }
+  --clr-white: #fff;
+  --clr-black: #222;
+  --transition: all 0.3s linear;
+  --radius: 0.25rem;
+  --max-width: 1170px;
+  --fixed-width: 620px;
+}
 
 .my-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: grid;
-    place-items: center;
-    transition: var(--transition);
-    visibility: hidden;
-    z-index: 0;
-  }
-  /* OPEN/CLOSE MODAL */
-  .show-my-modal {
-    visibility: visible;
-    z-index: 10;
-  }
-  .modal-container {
-    width: 90vw;
-    max-width: var(--fixed-width);
-    bottom: 20vh;
-    position: relative;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: grid;
+  place-items: center;
+  transition: var(--transition);
+  visibility: hidden;
+  z-index: 0;
+}
 
-  #repo-select{
-    flex-grow: 1;
-    border: 1px solid rgb(0 123 255 / 50%);
-    border-radius: 4px 0px 0px 4px;
+/* OPEN/CLOSE MODAL */
+
+.show-my-modal {
+  visibility: visible;
+  z-index: 10;
+}
+
+.modal-container {
+  width: 90vw;
+  max-width: var(--fixed-width);
+  bottom: 20vh;
+  position: relative;
+}
+
+#repo-select {
+  flex-grow: 1;
+  border: 1px solid rgb(0 123 255 / 50%);
+  border-radius: 4px 0px 0px 4px;
+}
+
+.page-item.active .page-link {
+  z-index: 0;
+}
+
+.zoom {
+  color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: inherit;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes scale-up {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
   }
-
-  .page-item.active .page-link {
-    z-index: 0;
+  80% {
+    opacity: 0.7;
   }
+  100% {
+    -webkit-transform: scale(7);
+    transform: scale(7);
+    opacity: 0;
+  }
+}
 
+@-webkit-keyframes scale-up {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    -webkit-transform: scale(7);
+    transform: scale(7);
+    opacity: 0;
+  }
+}
 
-  
+.scale-up {
+  -webkit-animation: scale-up 0.4s cubic-bezier(0.39, 0.57, 0.55, 1) both;
+  animation: scale-up 0.4s cubic-bezier(0.39, 0.57, 0.55, 1) both;
+}
