@@ -1,6 +1,7 @@
-import { Card, Badge, Button, Alert } from "react-bootstrap";
+import { Card, Badge, Button } from "react-bootstrap";
 import { IProps } from "./Types";
 import Loading from "./Loading";
+import AlertComponent from "./Alert";
 
 const IssuesComponent = ({
   error,
@@ -15,7 +16,6 @@ const IssuesComponent = ({
   const pageResults = "results on this page";
 
   const mapToFiltered = () => {
-    let count = 0;
     let repoUrl;
     return filteredIssues.map((x) => {
       const lastItem = x.repository_url.substring(
@@ -26,10 +26,6 @@ const IssuesComponent = ({
       if (x.pending) {
         repoUrl = x.html_url;
       }
-      if (count < 1 && !x.pending) {
-        console.log(x.html_url, "one of many");
-      }
-      count++;
 
       return (
         <Card key={x.id} className="mb-3">
@@ -63,6 +59,11 @@ const IssuesComponent = ({
           </Card.Body>
           <Card.Footer>
             <Badge variant="secondary">{lastItem}</Badge>
+            {x.pending && (
+              <Badge style={{ marginLeft: "3px" }} variant="info">
+                pending
+              </Badge>
+            )}
           </Card.Footer>
         </Card>
       );
@@ -72,25 +73,29 @@ const IssuesComponent = ({
   return (
     <div style={{ margin: "10px" }}>
       {error ? (
-        <Alert variant="danger">
-          <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-          <p>{error}</p>
-        </Alert>
+        <AlertComponent
+          variant={"danger"}
+          heading={"Oh snap! You got an error!"}
+          content={error}
+        />
       ) : !loaded ? (
         <Loading />
       ) : filteredIssues.length > 0 ? (
         <div>
-          <Alert variant="success">
-            <Alert.Heading>Total Results</Alert.Heading>
-            <p>{`${filteredIssues.length} ${pageResults}`}</p>
-          </Alert>
+          <AlertComponent
+            variant={"success"}
+            heading={"Total Results"}
+            content={`${filteredIssues.length} ${pageResults}`}
+          />
+
           {mapToFiltered()}
         </div>
       ) : (
-        <Alert variant="info">
-          <Alert.Heading>Change your search terms</Alert.Heading>
-          <p>{`${filteredIssues.length} ${pageResults}`}</p>
-        </Alert>
+        <AlertComponent
+          variant={"info"}
+          heading={"Change your search terms"}
+          content={`${filteredIssues.length} ${pageResults}`}
+        />
       )}
     </div>
   );

@@ -5,12 +5,13 @@ import { IState, Issue } from "./Types";
 import CardComponent from "./CardComponent";
 import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
-import { Form, InputGroup, Button, FormControl } from "react-bootstrap";
+import MultiStepForm from "./MultiStepForm";
+import FormModal from "./FormModal";
 
 const repos = [
-  { name: "TypeScript", id: 1 },
-  { name: "graphql-js", id: 2 },
-  { name: "react", id: 3 },
+  { name: "TypeScript", id: 1, url: "https://github.com/microsoft/TypeScript" },
+  { name: "graphql-js", id: 2, url: "https://github.com/graphql/graphql-js" },
+  { name: "react", id: 3, url: "https://github.com/facebook/react" },
 ];
 
 // const BaseUrl = "http://localhost:3001/";
@@ -22,7 +23,7 @@ const microsoft = "microsoft/TypeScript/issues";
 const facebook = "facebook/react/issues";
 const graphQl = "graphql/graphql-js/issues";
 
-interface GitUser {
+export interface GitUser {
   id: string;
   login: string;
   avatar_url: string;
@@ -129,26 +130,21 @@ function App() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    if (!selectedUser) return;
-    console.log(selectedUser, "selectedUser");
+    if (!selectedUser) return window.alert("selected user is not present");
     const { avatar_url, login, html_url } = selectedUser;
-    // console.log("***********************");
-    // console.log("userSelect ", userSelect);
-    // console.log("issuetitle ", issueTitle);
-    // console.log("repoSelect", repoSelect);
-    // console.log("avatar_url", avatar_url);
-    // console.log("login", login);
-    // console.log("html_url", html_url);
+    const selectedRepo = repos.find((repo) => repo.name === repoSelect);
+    if (!selectedRepo) return;
+    const { url } = selectedRepo;
     if (!issueTitle) {
       return window.alert("Title can not be blank");
     }
     setIsModalOpen(false);
-    console.log(Date.now().toString());
     const newIssue = {
+      pending: true,
       title: issueTitle,
       id: Date.now().toString(),
-      repository_url: "https://github.com/microsoft/TypeScript/issues/44943",
-      html_url: html_url,
+      repository_url: repoSelect,
+      html_url: url,
       user: {
         html_url,
         login,
@@ -169,97 +165,22 @@ function App() {
 
   return (
     <>
-      <div
-        id="modal-overlay"
-        onClick={closeModal}
-        className={`${
-          isModalOpen ? "my-modal-overlay show-my-modal" : "my-modal-overlay"
-        }`}
-      >
-        <div className="modal-container">
-          <Form
-            className="mb-3"
-            // onSubmit={handleSubmit}
-          >
-            {gitUsers.length < 1 ? (
-              <InputGroup className="mb-3 select-input">
-                <FormControl
-                  name="userSelect"
-                  placeholder="Search gitHub users"
-                  onChange={handleChange}
-                  value={userSelect}
-                />
-                <Button
-                  onClick={handleGitSearch}
-                  style={{ borderRadius: "0px 4px 4px 0px" }}
-                >
-                  Search
-                </Button>
-              </InputGroup>
-            ) : selectedUser && isFinalPage ? (
-              <InputGroup className="mb-3 select-input">
-                <Button
-                  onClick={() => goBack(2)}
-                  style={{ borderRadius: "4px 0px 0px 4px" }}
-                >
-                  back
-                </Button>
-                <Form.Control
-                  onChange={handleChange}
-                  as="select"
-                  name="repoSelect"
-                  value={repoSelect}
-                >
-                  {repos.map((repo) => (
-                    <option key={repo.id} value={repo.name}>
-                      {repo.name}
-                    </option>
-                  ))}
-                </Form.Control>
-                <FormControl
-                  placeholder="Issue Title"
-                  name="issueTitle"
-                  value={issueTitle}
-                  onChange={handleChange}
-                />
-                <Button
-                  onClick={handleSubmit}
-                  style={{ borderRadius: "0px 4px 4px 0px" }}
-                >
-                  Submit
-                </Button>
-              </InputGroup>
-            ) : (
-              <InputGroup className="mb-3 select-input">
-                <Button
-                  onClick={() => goBack(1)}
-                  style={{ borderRadius: "4px 0px 0px 4px" }}
-                >
-                  back
-                </Button>
-                <Form.Control
-                  as="select"
-                  onChange={handleChange}
-                  name="userSelect"
-                  value={userSelect}
-                >
-                  {gitUsers.map((option) => (
-                    <option key={option.id} value={option.login}>
-                      {option.login}
-                    </option>
-                  ))}
-                </Form.Control>
-                <Button
-                  onClick={finalPage}
-                  style={{ borderRadius: "0px 4px 4px 0px" }}
-                >
-                  Next
-                </Button>
-              </InputGroup>
-            )}
-          </Form>
-        </div>
-      </div>
+      <FormModal closeModal={closeModal} isModalOpen={isModalOpen}>
+        <MultiStepForm
+          gitUsers={gitUsers}
+          handleChange={handleChange}
+          userSelect={userSelect}
+          handleGitSearch={handleGitSearch}
+          selectedUser={selectedUser}
+          isFinalPage={isFinalPage}
+          goBack={goBack}
+          repoSelect={repoSelect}
+          repos={repos}
+          issueTitle={issueTitle}
+          handleSubmit={handleSubmit}
+          finalPage={finalPage}
+        />
+      </FormModal>
 
       <CardComponent openModal={openModal}>
         <FilterForm

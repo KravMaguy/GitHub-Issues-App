@@ -3,6 +3,8 @@
   }
   
   export interface Issue {
+    repoSelect?: string;
+    pending: boolean;
     title: string;
     id: string;
     repository_url: string;
