@@ -15,12 +15,22 @@ const IssuesComponent = ({
   const pageResults = "results on this page";
 
   const mapToFiltered = () => {
+    let count = 0;
+    let repoUrl;
     return filteredIssues.map((x) => {
       const lastItem = x.repository_url.substring(
         x.repository_url.lastIndexOf("/") + 1
       );
       const urlArray = x.html_url.split("/");
-      const repoUrl = urlArray.slice(0, urlArray.length - 2).join("/");
+      repoUrl = urlArray.slice(0, urlArray.length - 2).join("/");
+      if (x.pending) {
+        repoUrl = x.html_url;
+      }
+      if (count < 1 && !x.pending) {
+        console.log(x.html_url, "one of many");
+      }
+      count++;
+
       return (
         <Card key={x.id} className="mb-3">
           <Card.Body>
