@@ -1,11 +1,9 @@
 export interface FormModalProps {
   closeModal: (event: any) => void;
-  // isModalOpen: boolean;
 }
 
-const FormModal: React.SFC<FormModalProps> = ({
+const FormModal: React.FunctionComponent<FormModalProps> = ({
   closeModal,
-  // isModalOpen,
   children,
 }) => {
   return (

@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Form, InputGroup, Button, FormControl } from "react-bootstrap";
+import { fetchGitUsers } from "./api";
 import Step from "./Step";
 import { Issue } from "./Types";
-
-import axios from "axios";
 
 export interface GitUser {
   id: string;
@@ -46,8 +45,7 @@ const MultiStepForm: React.FunctionComponent<MultiStepFormProps> = ({
     if (!userSelect) {
       return window.alert("input can not be blank");
     }
-    axios
-      .get(`https://api.github.com/search/users?q=${userSelect}`)
+    fetchGitUsers(userSelect)
       .then(({ data }) => {
         const { items } = data;
         setGitUsers(items);

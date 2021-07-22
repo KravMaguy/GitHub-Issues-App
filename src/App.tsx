@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import IssuesComponent from "./IssuesComponent";
 import { IState, Issue } from "./Types";
 import CardComponent from "./CardComponent";
@@ -7,15 +6,7 @@ import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
 import MultiStepForm from "./MultiStepForm";
 import FormModal from "./FormModal";
-
-// const BaseUrl = "http://localhost:3001/";
-// const microsoft = "microsoft";
-// const facebook = "facebook";
-// const graphQl = "graphql";
-const BaseUrl = "https://api.github.com/repos/";
-const microsoft = "microsoft/TypeScript/issues";
-const facebook = "facebook/react/issues";
-const graphQl = "graphql/graphql-js/issues";
+import { fetchIssues } from "./api";
 
 function App() {
   const [gitIssues, setGitIssues] = useState<IState["issues"]>([]);
@@ -36,20 +27,14 @@ function App() {
   };
 
   useEffect(() => {
-    const Issues = [
-      axios.get(`${BaseUrl}${graphQl}?page=${page}`),
-      axios.get(`${BaseUrl}${microsoft}?page=${page}`),
-      axios.get(`${BaseUrl}${facebook}?page=${page}`),
-    ];
+    const Issues = fetchIssues(page);
     Promise.all(Issues)
       .then(([graphIssues, microsoftIssues, facebookIssues]) => {
         const issues = graphIssues.data
           .concat(microsoftIssues.data, facebookIssues.data)
-          .sort((a: Issue, b: Issue) => {
-            const titleA = a.title;
-            const titleB = b.title;
-            return titleA < titleB ? -1 : titleA > titleB ? 1 : 0;
-          });
+          .sort((a: Issue, b: Issue) =>
+            a.title < b.title ? -1 : a.title > b.title ? 1 : 0
+          );
         setGitIssues(issues);
         setIsLoaded(true);
       })
