@@ -7,6 +7,7 @@ import FilterForm from "./FilterForm";
 import PaginationComponent from "./PaginationComponent";
 import MultiStepForm from "./MultiStepForm";
 import FormModal from "./FormModal";
+import Step from "./Step";
 
 const repos = [
   { name: "TypeScript", id: 1, url: "https://github.com/microsoft/TypeScript" },
@@ -31,6 +32,7 @@ export interface GitUser {
 }
 
 function App() {
+  const [step, setStep] = useState(1);
   const [gitIssues, setGitIssues] = useState<IState["issues"]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [page, setPage]: [number, (a: number) => void] = useState(1);
@@ -50,6 +52,7 @@ function App() {
 
   const handleGitSearch = (event: any) => {
     event.preventDefault();
+
     if (!userSelect) {
       return window.alert("input can not be blank");
     }
@@ -59,6 +62,7 @@ function App() {
         const { items } = data;
         setGitUsers(items);
         setSelectedUser(items[0]);
+        setStep(2);
       })
       .catch((e) => console.log("err", e));
   };
@@ -152,11 +156,13 @@ function App() {
   };
 
   const goBack = (step: number) => {
+    setStep(step);
     return step === 1 ? setGitUsers([]) : SetIsFinalPage(false);
   };
 
   const finalPage = () => {
     console.log("go to next page with the selectedUser");
+    setStep(3);
     SetIsFinalPage(true);
   };
 
@@ -164,7 +170,7 @@ function App() {
     <>
       {isModalOpen && (
         <FormModal closeModal={closeModal}>
-          <div className="scale-up zoom">#1</div>
+          <Step step={step} />
           <MultiStepForm
             gitUsers={gitUsers}
             handleChange={handleChange}

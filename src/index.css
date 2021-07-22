@@ -52,10 +52,6 @@
   z-index: inherit;
 }
 
-.hidden {
-  display: none;
-}
-
 @keyframes scale-up {
   0% {
     -webkit-transform: scale(0);
