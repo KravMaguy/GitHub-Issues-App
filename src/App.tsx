@@ -68,10 +68,7 @@ function App() {
   };
 
   const closeModal = (event: any) => {
-    //Property 'stopPropagation' does not exist on type 'MouseEventHandler<HTMLDivElement>'.ts(2339)
-    // event.stopPropagation();
-    const targetId = event.target.id;
-    if (targetId === "modal-overlay") {
+    if (event.currentTarget === event.target) {
       setIsModalOpen(false);
     }
   };
@@ -165,23 +162,25 @@ function App() {
 
   return (
     <>
-      <FormModal closeModal={closeModal} isModalOpen={isModalOpen}>
-        <div className={`${isModalOpen ? "scale-up zoom" : "hidden"}`}>#1</div>
-        <MultiStepForm
-          gitUsers={gitUsers}
-          handleChange={handleChange}
-          userSelect={userSelect}
-          handleGitSearch={handleGitSearch}
-          selectedUser={selectedUser}
-          isFinalPage={isFinalPage}
-          goBack={goBack}
-          repoSelect={repoSelect}
-          repos={repos}
-          issueTitle={issueTitle}
-          handleSubmit={handleSubmit}
-          finalPage={finalPage}
-        />
-      </FormModal>
+      {isModalOpen && (
+        <FormModal closeModal={closeModal}>
+          <div className="scale-up zoom">#1</div>
+          <MultiStepForm
+            gitUsers={gitUsers}
+            handleChange={handleChange}
+            userSelect={userSelect}
+            handleGitSearch={handleGitSearch}
+            selectedUser={selectedUser}
+            isFinalPage={isFinalPage}
+            goBack={goBack}
+            repoSelect={repoSelect}
+            repos={repos}
+            issueTitle={issueTitle}
+            handleSubmit={handleSubmit}
+            finalPage={finalPage}
+          />
+        </FormModal>
+      )}
 
       <CardComponent openModal={openModal}>
         <FilterForm

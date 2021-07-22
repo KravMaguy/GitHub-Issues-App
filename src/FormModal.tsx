@@ -1,20 +1,18 @@
 export interface FormModalProps {
   closeModal: (event: any) => void;
-  isModalOpen: boolean;
+  // isModalOpen: boolean;
 }
 
 const FormModal: React.SFC<FormModalProps> = ({
   closeModal,
-  isModalOpen,
+  // isModalOpen,
   children,
 }) => {
   return (
     <div
       id="modal-overlay"
       onClick={closeModal}
-      className={`${
-        isModalOpen ? "my-modal-overlay show-my-modal" : "my-modal-overlay"
-      }`}
+      className="my-modal-overlay show-my-modal"
     >
       <div className="modal-container">{children}</div>
     </div>
